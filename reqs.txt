@@ -1,0 +1,5 @@
+# Install CUDA 12.1 PyTorch stack
+uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+
+# Install LLM Compressor stack locked to numpy<2
+uv pip install "numpy<2" "transformers>=4.52.1" llmcompressor compressed-tensors datasets accelerate ipykernel
