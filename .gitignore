@@ -27,3 +27,14 @@ sparse_logs/
 # Environment variables & local secrets (optional safety net)
 .env
 .env.*
+
+
+
+# IDE & Server Caches
+.cursor-server
+.vscode-server
+.windsurf-server
+.lightning_studio
+.idea/
+.vscode/
+sparse_logs/
