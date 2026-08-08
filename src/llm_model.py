@@ -19,6 +19,8 @@ logger = logging.getLogger(__name__)
 DEFAULT_VLLM_URL = os.getenv("VLLM_URL", "http://localhost:8000")
 DEFAULT_MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen3-0.6B")
 OUTPUT_DIR = "outputs"
+VLLM_URL = "http://localhost:8000"
+
 
 # Environment configuration
 os.environ["VLLM_USE_FLASHINFER_SAMPLER"] = "0"
@@ -100,6 +102,20 @@ def initialize_vllm_pipeline(
         vllm_url=vllm_url,
         disable_thinking=disable_thinking,
     )
+
+def get_vllm_metrics(base_url=VLLM_URL):
+    """Scrape vLLM Prometheus /metrics and return {name: value}."""
+    r = requests.get(f"{base_url}/metrics")
+    metrics = {}
+    for line in r.text.split("\n"):
+        if line.startswith("#") or not line.strip():
+            continue
+        name = line.split("{")[0].split()[0]
+        try:
+            metrics[name] = float(line.split()[-1])
+        except (ValueError, IndexError):
+            continue
+    return metrics
 
 
 if __name__ == "__main__":
