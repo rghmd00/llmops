@@ -5,6 +5,14 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "docling>=2.118.1",
+    "docling-core>=2.91.0",
     "ipykernel>=7.3.0",
+    "langchain-community>=0.4.2",
+    "langchain-core>=1.5.3",
+    "langchain-huggingface>=1.2.2",
+    "langchain-openai>=1.4.2",
     "pip>=26.2",
+    "sentence-transformers>=5.7.0",
+    "vllm>=0.26.0",
 ]

@@ -7,6 +7,23 @@ wheels/
 *.egg-info
 
 # Virtual environments
-.venv
+.venv/
 
+# Lightning AI & internal tool caches
+.humming/
+.lightning_studio/
+.tilelang/
+.triton/
+
+# Local data, models, and vector stores
+data/
 models/
+faiss_docling_index/
+
+# Outputs, logs, and metrics
+outputs/
+sparse_logs/
+
+# Environment variables & local secrets (optional safety net)
+.env
+.env.*
