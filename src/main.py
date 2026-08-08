@@ -1,41 +1,30 @@
 
+import time
 import asyncio
 
 from langchain_huggingface import HuggingFaceEmbeddings  # type: ignore
-from rag_pipeline import load_retriever,initialize_vllm_pipeline
-from retriever import retrieval_function
-
+from rag_pipeline import load_retriever,initialize_vllm_pipeline,build_rag_chain,run_with_metrics
+from utils import queries
 
 
 
 async def main():
-    # Setup shared embedding model
-    MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 
-    embedding_model = HuggingFaceEmbeddings(
-    model_name=MODEL_NAME,
-    model_kwargs={"device": "cpu"}
-)
-
-    # 1. Initialize retriever
-    retriever = load_retriever(embedding_model)
-
-    # 2. Initialize LLM via vLLM pipeline check
+    EMBED_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+    embedding_model = HuggingFaceEmbeddings(model_name=EMBED_MODEL_NAME)
     llm = initialize_vllm_pipeline()
+    retriever = load_retriever(embedding_model)
+    chain = build_rag_chain(retriever, llm)
 
 
-    queries = [
-    "What are the three distinct RAG paradigms defined in the survey paper, and how do their workflows differ?",
-    "What is the difference between naive RAG and advanced RAG?",
-    "How does retrieval augmentation help reduce hallucination?",
-    "What evaluation metrics are used for RAG systems in the survey?",
-    "What are the main components of a modular RAG architecture?",
-    ]
+    print(f"Sending {len(queries)} concurrent RAG queries...\n")
+    start = time.time()
+    results = await run_with_metrics(chain, queries)
+    elapsed = time.time() - start # All 33 completed in 5.42s
 
-
-    retrieval_function(llm=llm,retriever=retriever,queries=queries)
-
-
+    print(f"\nAll {len(queries)} completed in {elapsed:.2f}s")
+    for q, a in zip(queries, results):
+        print(f"\nQ: {q}\nA: {a}")
 
 if __name__ == "__main__":
     asyncio.run(main())
