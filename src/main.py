@@ -9,6 +9,7 @@ from utils import queries
 
 
 async def main():
+    
 
     EMBED_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
     embedding_model = HuggingFaceEmbeddings(model_name=EMBED_MODEL_NAME)
@@ -18,9 +19,12 @@ async def main():
 
 
     print(f"Sending {len(queries)} concurrent RAG queries...\n")
+
+    print("--- Running Batch 1 (Cache Population) ---")
     start = time.time()
     results = await run_with_metrics(chain, queries)
     elapsed = time.time() - start # All 33 completed in 5.42s
+
 
     print(f"\nAll {len(queries)} completed in {elapsed:.2f}s")
     for q, a in zip(queries, results):
